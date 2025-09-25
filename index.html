@@ -3,7 +3,7 @@
 <head>
   <script>
   let finalCode = "----"; 
-  const GAME_KEY = "code1"; // <- change pour chaque jeu
+  const GAME_KEY = "code1"; // <- change pour chaque jeu (code1, code2...)
 
   async function loadCode() {
     try {
@@ -30,7 +30,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SYSTÈME DE SÉCURITÉ - ACCÈS REQUIS</title>
   <style>
-    /* ton CSS inchangé */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Orbitron',monospace;background:linear-gradient(45deg,#0a0a0a,#1a1a2e,#16213e);color:#00ff41;overflow:hidden;height:100vh;display:flex;justify-content:center;align-items:center}
+    .container{background:rgba(0,0,0,.9);border:2px solid #00ff41;border-radius:10px;padding:30px;width:650px;position:relative;box-shadow:0 0 30px rgba(0,255,65,.3);animation:pulse 2s infinite alternate;transition:all .5s ease}
+    .container.error-mode{border-color:#ff4444;box-shadow:0 0 30px rgba(255,68,68,.5);background:rgba(50,0,0,.9)}
+    @keyframes pulse{0%{box-shadow:0 0 30px rgba(0,255,65,.3)}100%{box-shadow:0 0 50px rgba(0,255,65,.6)}}
+    .header{text-align:center;margin-bottom:30px;position:relative}
+    .title{font-size:24px;font-weight:900;color:#ff0080;text-shadow:0 0 10px #ff0080;margin-bottom:10px}
+    .subtitle{font-size:14px;color:#00ff41;opacity:.8}
+    .level-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:10px;background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:5px}
+    .level-display{font-size:18px;font-weight:bold;color:#ff8800}
+    .level-progress{display:flex;gap:10px}
+    .level-dot{width:15px;height:15px;border-radius:50%;border:2px solid #00ff41;background:transparent;transition:all .3s}
+    .level-dot.completed{background:#00ff41;box-shadow:0 0 10px #00ff41}
+    .level-dot.current{background:#ff8800;border-color:#ff8800;box-shadow:0 0 15px #ff8800;animation:currentLevel 1s infinite alternate}
+    @keyframes currentLevel{0%{transform:scale(1)}100%{transform:scale(1.2)}}
+    .game-area{background:#000;border:1px solid #00ff41;border-radius:5px;padding:20px;margin:20px 0;min-height:320px;transition:all .5s ease}
+    .game-area.disabled{opacity:.6;pointer-events:none}
+    .matrix-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+    .matrix-cell{background:#001100;border:1px solid #00ff41;padding:12px;text-align:center;cursor:pointer;transition:all .3s;font-family:'Orbitron',monospace;font-weight:bold;font-size:14px}
+    .matrix-cell:hover{background:#003300;box-shadow:0 0 15px #00ff41;transform:scale(1.1)}
+    .matrix-cell.disabled{cursor:not-allowed;opacity:.5}
+    .matrix-cell.correct{background:#004400;color:#00ff00;box-shadow:0 0 20px #00ff00}
+    .matrix-cell.wrong{background:#440000;color:#ff0000;box-shadow:0 0 20px #ff0000;animation:shake .5s}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+    .progress-bar{background:#001100;border:1px solid #00ff41;height:20px;margin:20px 0;position:relative;overflow:hidden}
+    .progress-fill{background:linear-gradient(90deg,#00ff41,#00aa00);height:100%;width:0%;transition:width .5s;position:relative}
+    .progress-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:slide 2s infinite}
+    @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    .status{text-align:center;font-size:16px;font-weight:bold;margin:20px 0}
+    .timer{color:#ff8800;font-size:20px;text-align:center;margin:10px 0}
+    .instructions{color:#ccc;font-size:11px;text-align:center;margin-bottom:15px;opacity:.8}
+    .level-complete{display:none;text-align:center;animation:fadeIn 1s;color:#00ff41}
+    .success-screen{display:none;text-align:center;animation:fadeIn 1s}
+    .failure-screen{display:none;text-align:center;animation:fadeIn 1s;color:#ff0000}
+    .failure-title{font-size:32px;font-weight:900;color:#ff0000;text-shadow:0 0 20px #ff0000;margin:30px 0;animation:glitch .5s infinite}
+    .failure-subtitle{font-size:16px;color:#ff6666;margin-bottom:30px}
+    @keyframes fadeIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+    .code-display{font-size:48px;font-weight:900;color:#00ff41;text-shadow:0 0 20px #00ff41;margin:30px 0;letter-spacing:10px;animation:glow 1.5s infinite alternate}
+    @keyframes glow{0%{text-shadow:0 0 20px #00ff41}100%{text-shadow:0 0 40px #00ff41,0 0 60px #00ff41}}
+    .restart-btn,.next-btn{background:linear-gradient(45deg,#ff0080,#8000ff);border:none;padding:15px 30px;color:white;font-family:'Orbitron',monospace;font-weight:bold;border-radius:5px;cursor:pointer;transition:all .3s;margin:10px}
+    .restart-btn:hover,.next-btn:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(255,0,128,.5)}
+    .glitch{position:relative;animation:glitch 2s infinite}
+    @keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-2px,2px)}40%{transform:translate(-2px,-2px)}60%{transform:translate(2px,2px)}80%{transform:translate(2px,-2px)}}
+    .difficulty-indicator{text-align:center;font-size:12px;color:#ff8800;margin-bottom:10px}
   </style>
 </head>
 <body>
@@ -39,19 +83,34 @@
       <div class="title glitch">⚠️ SYSTÈME DE SÉCURITÉ ⚠️</div>
       <div class="subtitle">PROTOCOLE DE SÉCURITÉ À TROIS NIVEAUX</div>
     </div>
-
-    <!-- ... ton jeu ... -->
-
-    <div id="successScreen" class="success-screen">
-      <div class="title">🔓 ACCÈS ACCORDÉ 🔓</div>
-      <!-- ici on met un id -->
-      <div id="codeDisplay" class="code-display">----</div>
-      <div class="subtitle">Code d'accès récupéré - Mission accomplie</div>
-      <div style="margin-top: 30px; font-size: 14px; color: #666;">
-        Système déchiffré avec succès
+    <div class="level-info">
+      <div class="level-display" id="levelDisplay">NIVEAU 1/3</div>
+      <div class="level-progress">
+        <div class="level-dot current" id="dot1"></div>
+        <div class="level-dot" id="dot2"></div>
+        <div class="level-dot" id="dot3"></div>
       </div>
     </div>
-
+    <div id="gameArea" class="game-area">
+      <div class="difficulty-indicator" id="difficultyInfo">DIFFICULTÉ: DÉBUTANT | SÉQUENCE: 3 | VITESSE: NORMALE</div>
+      <div class="instructions">Déchiffrez les 3 niveaux de sécurité pour obtenir le code d'accès<br>Chaque niveau augmente la difficulté</div>
+      <div class="timer" id="timer">TEMPS: 90s</div>
+      <div class="matrix-grid" id="matrixGrid"></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="status" id="status">INITIALISATION DU SYSTÈME...</div>
+    </div>
+    <div id="levelComplete" class="level-complete">
+      <div class="title">✅ NIVEAU DÉCHIFFRÉ ✅</div>
+      <div id="levelCompleteText" class="subtitle"></div>
+      <button class="next-btn" onclick="nextLevel()">NIVEAU SUIVANT</button>
+    </div>
+    <div id="successScreen" class="success-screen">
+      <div class="title">🔓 ACCÈS ACCORDÉ 🔓</div>
+      <!-- Correction ici -->
+      <div id="codeDisplay" class="code-display">----</div>
+      <div class="subtitle">Code d'accès récupéré - Mission accomplie</div>
+      <div style="margin-top:30px;font-size:14px;color:#666;">Système déchiffré avec succès</div>
+    </div>
     <div id="failureScreen" class="failure-screen">
       <div class="failure-title glitch">⚠️ ÉCHEC DU PIRATAGE ⚠️</div>
       <div class="failure-subtitle">SYSTÈME DE SÉCURITÉ ACTIVÉ - ACCÈS REFUSÉ</div>
@@ -60,19 +119,24 @@
   </div>
 
   <script>
-    /* tes variables et fonctions identiques ... */
-
-    function allLevelsCompleted() {
-      document.getElementById('successScreen').style.display = 'block';
-      // insérer le code récupéré
-      document.getElementById("codeDisplay").textContent = finalCode;
-      document.body.style.animation = 'pulse 0.5s infinite alternate';
-    }
-
-    // reste du code inchangé...
-    window.onload = function() {
-      setTimeout(initGame, 1000);
-    };
-  </script>
-</body>
-</html>
+    let currentLevel=1,sequence=[],playerSequence=[],currentStep=0,timeLeft=90,gameTimer,gameActive=false,levelsCompleted=[],showingSequence=false,isLocked=false;
+    const matrixSymbols=['α','β','γ','δ','ε','ζ','η','θ','λ','μ','π','σ','φ','ψ','ω','∆'];
+    const levelConfig={1:{sequenceLength:3,showSpeed:1000,showDuration:800,timeLimit:90,name:"DÉBUTANT",description:"SÉQUENCE: 3 | VITESSE: NORMALE"},2:{sequenceLength:4,showSpeed:800,showDuration:600,timeLimit:75,name:"INTERMÉDIAIRE",description:"SÉQUENCE: 4 | VITESSE: RAPIDE"},3:{sequenceLength:5,showSpeed:700,showDuration:500,timeLimit:60,name:"EXPERT",description:"SÉQUENCE: 5 | VITESSE: TRÈS RAPIDE"}};
+    function initGame(){const config=levelConfig[currentLevel];const grid=document.getElementById('matrixGrid');grid.innerHTML='';document.getElementById('levelDisplay').textContent=`NIVEAU ${currentLevel}/3`;document.getElementById('difficultyInfo').textContent=`DIFFICULTÉ: ${config.name} | ${config.description}`;updateLevelDots();sequence=[];for(let i=0;i<config.sequenceLength;i++){sequence.push(Math.floor(Math.random()*16))}for(let i=0;i<16;i++){const cell=document.createElement('div');cell.className='matrix-cell';cell.textContent=matrixSymbols[i];cell.addEventListener('click',()=>selectCell(i));grid.appendChild(cell)}playerSequence=[];currentStep=0;timeLeft=config.timeLimit;gameActive=true;showingSequence=false;isLocked=false;resetErrorMode();document.getElementById('status').textContent=`DÉCHIFFREMENT NIVEAU ${currentLevel} EN COURS...`;showSequence();gameTimer=setInterval(updateTimer,1000)}
+    function updateLevelDots(){for(let i=1;i<=3;i++){const dot=document.getElementById(`dot${i}`);dot.classList.remove('completed','current');if(levelsCompleted.includes(i)){dot.classList.add('completed')}else if(i===currentLevel){dot.classList.add('current')}}}
+    function disableInteraction(){showingSequence=true;isLocked=true;document.querySelectorAll('.matrix-cell').forEach(c=>c.classList.add('disabled'));document.getElementById('gameArea').classList.add('disabled')}
+    function enableInteraction(){showingSequence=false;isLocked=false;document.querySelectorAll('.matrix-cell').forEach(c=>c.classList.remove('disabled'));document.getElementById('gameArea').classList.remove('disabled')}
+    function setErrorMode(){document.querySelector('.container').classList.add('error-mode')}
+    function resetErrorMode(){document.querySelector('.container').classList.remove('error-mode')}
+    function showSequence(){const config=levelConfig[currentLevel];const cells=document.querySelectorAll('.matrix-cell');const status=document.getElementById('status');disableInteraction();status.textContent=`MÉMORISEZ LA SÉQUENCE NIVEAU ${currentLevel}...`;sequence.forEach((index,step)=>{setTimeout(()=>{cells[index].style.background='#ffff00';cells[index].style.color='#000';cells[index].style.boxShadow='0 0 30px #ffff00';setTimeout(()=>{cells[index].style.background='#001100';cells[index].style.color='#00ff41';cells[index].style.boxShadow='none';if(step===sequence.length-1){setTimeout(()=>{status.textContent='REPRODUISEZ LA SÉQUENCE !';enableInteraction()},300)}},config.showDuration)},step*config.showSpeed)})}
+    function selectCell(index){if(!gameActive||showingSequence||isLocked)return;const cells=document.querySelectorAll('.matrix-cell');const cell=cells[index];if(sequence[currentStep]===index){cell.classList.add('correct');playerSequence.push(index);currentStep++;updateProgress();setTimeout(()=>cell.classList.remove('correct'),800);if(currentStep===sequence.length){levelCompleted()}}else{isLocked=true;cell.classList.add('wrong');setErrorMode();document.getElementById('status').textContent='ERREUR ! SYSTÈME VERROUILLÉ...';setTimeout(()=>{cell.classList.remove('wrong');resetSequence()},1000)}}
+    function updateProgress(){const progress=(currentStep/sequence.length)*100;document.getElementById('progressFill').style.width=progress+'%'}
+    function resetSequence(){playerSequence=[];currentStep=0;updateProgress();setTimeout(()=>showSequence(),300)}
+    function updateTimer(){timeLeft--;document.getElementById('timer').textContent=`TEMPS: ${timeLeft}s`;if(timeLeft<=15){document.getElementById('timer').style.color='#ff0000'}if(timeLeft<=0){gameOver()}}
+    function gameOver(){gameActive=false;isLocked=true;clearInterval(gameTimer);document.getElementById('gameArea').style.display='none';document.getElementById('levelComplete').style.display='none';document.getElementById('failureScreen').style.display='block';document.body.style.animation='pulse .3s infinite alternate';const c=document.querySelector('.container');c.style.borderColor='#ff0000';c.style.boxShadow='0 0 50px rgba(255,0,0,.6)'}
+    function levelCompleted(){gameActive=false;isLocked=true;clearInterval(gameTimer);levelsCompleted.push(currentLevel);updateLevelDots();document.getElementById('gameArea').style.display='none';document.getElementById('levelCompleteText').textContent=`Niveau ${currentLevel} déchiffré ! ${levelsCompleted.length}/3 niveaux terminés`;document.getElementById('levelComplete').style.display='block'}
+    function nextLevel(){document.getElementById('levelComplete').style.display='none';if(currentLevel<3){currentLevel++;document.getElementById('gameArea').style.display='block';initGame()}else{allLevelsCompleted()}}
+    function allLevelsCompleted(){document.getElementById('successScreen').style.display='block';document.getElementById("codeDisplay").textContent=finalCode;document.body.style.animation='pulse .5s infinite alternate'}
+    function restartGame(){currentLevel=1;levelsCompleted=[];isLocked=false;document.getElementById('gameArea').style.display='block';document.getElementById('successScreen').style.display='none';document.getElementById('levelComplete').style.display='none';document.getElementById('failureScreen').style.display='none';document.body.style.animation='';const c=document.querySelector('.container');c.style.borderColor='#00ff41';c.style.boxShadow='0 0 30px rgba(0,255,65,.3)';initGame()}
+    window.onload=function(){setTimeout(initGame,1000)}
+  </
