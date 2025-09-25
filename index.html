@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <script>
+  let finalCode = "----"; 
+  const GAME_KEY = "code1"; // <- change pour chaque jeu
+
+  async function loadCode() {
+    try {
+      const res = await fetch("./codes.txt", { cache: "no-cache" });
+      const text = await res.text();
+      const lines = text.split("\n");
+      const map = {};
+      lines.forEach(line => {
+        const [key, value] = line.split("=");
+        if (key && value) {
+          map[key.trim()] = value.trim();
+        }
+      });
+      if (map[GAME_KEY]) {
+        finalCode = map[GAME_KEY];
+      }
+    } catch (e) {
+      console.error("Erreur de chargement du txt :", e);
+    }
+  }
+  loadCode();
+  </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SYSTÈME DE SÉCURITÉ - ACCÈS REQUIS</title>
@@ -373,7 +398,7 @@
         
         <div id="successScreen" class="success-screen">
             <div class="title">🔓 ACCÈS ACCORDÉ 🔓</div>
-            <div class="code-display">3812</div>
+            <div class="code-display">finalCode</div>
             <div class="subtitle">Code d'accès récupéré - Mission accomplie</div>
             <div style="margin-top: 30px; font-size: 14px; color: #666;">
                 Système déchiffré avec succès
