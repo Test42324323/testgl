@@ -396,13 +396,10 @@
             <button class="next-btn" onclick="nextLevel()">NIVEAU SUIVANT</button>
         </div>
         
-        <div id="successScreen" class="success-screen">
+        <div id="successScreen" class="success-screen" style="display:none;">
             <div class="title">🔓 ACCÈS ACCORDÉ 🔓</div>
-            <div class="code-display">finalCode</div>
+            <div id="codeDisplay" class="code-display">----</div>
             <div class="subtitle">Code d'accès récupéré - Mission accomplie</div>
-            <div style="margin-top: 30px; font-size: 14px; color: #666;">
-                Système déchiffré avec succès
-            </div>
         </div>
         
         <div id="failureScreen" class="failure-screen">
