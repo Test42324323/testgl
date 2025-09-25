@@ -1,6 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <script>
+    let finalCode = "----"; 
+    const GAME_KEY = "codeYatch"; // <- change pour chaque jeu
+
+    async function loadCode() {
+    try {
+        const res = await fetch("./codes.txt", { cache: "no-cache" });
+        const text = await res.text();
+    // Découpe ligne par ligne
+        const lines = text.split("\n");
+        const map = {};
+        lines.forEach(line => {
+        const [key, value] = line.split("=");
+        if (key && value) {
+            map[key.trim()] = value.trim();
+        }
+        });
+        if (map[GAME_KEY]) {
+        finalCode = map[GAME_KEY];
+        }
+    } catch (e) {
+        console.error("Erreur de chargement du txt :", e);
+    }
+    }
+    loadCode();
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INFILTRATION YACHT - SONAR DÉFENSIF</title>
@@ -492,7 +519,7 @@
                 
                 <div class="game-over-screen" id="gameOverScreen">
                     <div class="result-message" id="resultMessage">🔓 PIRATAGE RÉUSSI 🔓</div>
-                    <div class="final-code" id="finalResult">9874</div>
+                    <div class="final-code" id="finalResult">finalCode</div>
                     <div class="result-message" id="subMessage">
                         ✅ Système de sécurité neutralisé<br>
                         ✅ Accès yacht accordé - Mission réussie
