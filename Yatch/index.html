@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFILTRATION YACHT - SONAR DÉFENSIF</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&family=Rajdhani:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: radial-gradient(circle at center, #001122, #000811, #000000);
+            color: #00ffaa;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* Effet d'ondulation sous-marine */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 170, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 60%, rgba(0, 200, 255, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 150, 200, 0.04) 0%, transparent 50%);
+            animation: waterFlow 8s infinite ease-in-out;
+            pointer-events: none;
+        }
+        
+        @keyframes waterFlow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-10px, -5px) scale(1.02); }
+            66% { transform: translate(5px, -8px) scale(0.98); }
+        }
+        
+        .submarine-console {
+            background: linear-gradient(145deg, #1a2634, #0f1a26);
+            border: 3px solid #00ffaa;
+            border-radius: 20px;
+            padding: 30px;
+            width: 850px;
+            height: 650px;
+            position: relative;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 170, 0.3),
+                inset 0 0 30px rgba(0, 255, 170, 0.1);
+            animation: consolePulse 3s infinite ease-in-out;
+        }
+        
+        @keyframes consolePulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(0, 255, 170, 0.3), inset 0 0 30px rgba(0, 255, 170, 0.1); }
+            50% { box-shadow: 0 0 70px rgba(0, 255, 170, 0.5), inset 0 0 40px rgba(0, 255, 170, 0.15); }
+        }
+        
+        .console-header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .mission-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff6b35;
+            text-shadow: 0 0 15px #ff6b35;
+            margin-bottom: 8px;
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 15px #ff6b35; }
+            100% { text-shadow: 0 0 25px #ff6b35, 0 0 35px #ff4500; }
+        }
+        
+        .mission-subtitle {
+            font-size: 14px;
+            color: #00ccdd;
+            opacity: 0.9;
+        }
+        
+        .sonar-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            height: 480px;
+        }
+        
+        .sonar-display {
+            background: radial-gradient(circle, #001a1a 0%, #000f0f 70%, #000505 100%);
+            border: 2px solid #00ffaa;
+            border-radius: 50%;
+            width: 320px;
+            height: 320px;
+            position: relative;
+            margin: auto;
+            overflow: hidden;
+        }
+        
+        .sonar-grid {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+        }
+        
+        /* Lignes de grille sonar */
+        .sonar-grid::before,
+        .sonar-grid::after {
+            content: '';
+            position: absolute;
+            background: rgba(0, 255, 170, 0.3);
+        }
+        
+        .sonar-grid::before {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+        }
+        
+        .sonar-grid::after {
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+        }
+        
+        /* Cercles concentriques */
+        .sonar-circle {
+            position: absolute;
+            border: 1px solid rgba(0, 255, 170, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .circle-1 { width: 80px; height: 80px; }
+        .circle-2 { width: 160px; height: 160px; }
+        .circle-3 { width: 240px; height: 240px; }
+        
+        /* Balayage radar */
+        .sonar-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            transform-origin: left center;
+            animation: sonarSweep 4s linear infinite;
+            transform: translate(0, -50%);
+        }
+        
+        @keyframes sonarSweep {
+            0% { transform: translate(0, -50%) rotate(0deg); }
+            100% { transform: translate(0, -50%) rotate(360deg); }
+        }
+        
+        /* Point central (zone à protéger) */
+        .center-target {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: #00ffaa;
+            border: 2px solid #44ffcc;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: centerPulse 1.5s infinite;
+            z-index: 10;
+        }
+        
+        @keyframes centerPulse {
+            0%, 100% { 
+                box-shadow: 0 0 10px #00ffaa; 
+                transform: translate(-50%, -50%) scale(1); 
+            }
+            50% { 
+                box-shadow: 0 0 25px #00ffaa; 
+                transform: translate(-50%, -50%) scale(1.2); 
+            }
+        }
+        
+        /* Cibles mobiles */
+        .moving-target {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ff4444;
+            border: 2px solid #ff6666;
+            border-radius: 50%;
+            cursor: crosshair;
+            animation: targetPulse 1s infinite;
+            z-index: 5;
+            transition: all 0.1s;
+        }
+        
+        .moving-target:hover {
+            transform: scale(1.3);
+            background: #ffff44;
+            border-color: #ffff66;
+            box-shadow: 0 0 15px #ffff44;
+        }
+        
+        @keyframes targetPulse {
+            0%, 100% { 
+                box-shadow: 0 0 5px #ff4444; 
+            }
+            50% { 
+                box-shadow: 0 0 15px #ff4444; 
+            }
+        }
+        
+        .moving-target.destroyed {
+            background: #44ff44;
+            border-color: #66ff66;
+            animation: destroyEffect 0.5s ease-out forwards;
+        }
+        
+        @keyframes destroyEffect {
+            0% { 
+                transform: scale(1); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(2); 
+                background: #ffffff;
+            }
+            100% { 
+                transform: scale(0); 
+                opacity: 0; 
+            }
+        }
+        
+        .control-panel {
+            background: linear-gradient(145deg, #2a3441, #1f2832);
+            border: 2px solid #00ccdd;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .frequency-display {
+            background: #000;
+            border: 1px solid #00ffaa;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            color: #00ffaa;
+            text-shadow: 0 0 10px #00ffaa;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .targets-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #001122;
+            border: 2px solid #0088cc;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .counter-item {
+            text-align: center;
+        }
+        
+        .counter-label {
+            font-size: 12px;
+            color: #0088cc;
+            margin-bottom: 5px;
+        }
+        
+        .counter-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ccff;
+        }
+        
+        .counter-value.danger {
+            color: #ff4444;
+            animation: dangerBlink 1s infinite;
+        }
+        
+        @keyframes dangerBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .instructions {
+            color: #cccccc;
+            font-size: 12px;
+            text-align: center;
+            margin: 10px 0;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        .mission-status {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid #00ffaa;
+        }
+        
+        .game-over-screen {
+            display: none;
+            text-align: center;
+            animation: screenReveal 1s ease-out;
+            background: linear-gradient(145deg, #2a4455, #1a3344);
+            border: 3px solid #ffaa00;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .game-over-screen.failure {
+            border-color: #ff4444;
+            background: linear-gradient(145deg, #442a2a, #331a1a);
+        }
+        
+        @keyframes screenReveal {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.5) rotate(-10deg); 
+            }
+            50% { 
+                transform: scale(1.1) rotate(2deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg); 
+            }
+        }
+        
+        .final-code {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffaa00;
+            text-shadow: 0 0 30px #ffaa00;
+            margin: 20px 0;
+            letter-spacing: 8px;
+            animation: finalCodeGlow 1.5s infinite alternate;
+        }
+        
+        @keyframes finalCodeGlow {
+            0% { text-shadow: 0 0 30px #ffaa00; }
+            100% { text-shadow: 0 0 50px #ffaa00, 0 0 70px #ff8800; }
+        }
+        
+        .failure-text {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff4444;
+            text-shadow: 0 0 30px #ff4444;
+            margin: 20px 0;
+            letter-spacing: 4px;
+        }
+        
+        .result-message {
+            color: #44ff88;
+            font-size: 18px;
+            margin: 15px 0;
+        }
+        
+        .result-message.failure {
+            color: #ff6666;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            padding: 12px 25px;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 15px auto;
+            display: block;
+        }
+        
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+        }
+        
+        .coordinates {
+            position: absolute;
+            font-size: 10px;
+            color: #00ffaa;
+            opacity: 0.7;
+        }
+        
+        .wave-counter {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 18px;
+            color: #ff6b35;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ff6b35;
+        }
+    </style>
+</head>
+<body>
+    <div class="submarine-console">
+        <div class="wave-counter" id="waveCounter">VAGUE: 1/10</div>
+        
+        <div class="console-header">
+            <div class="mission-title">🛥️ HACKING SYSTÈME DU YATCH 🛥️</div>
+            <div class="mission-subtitle">SONAR DÉFENSIF - REPOUSSEZ LA POLICE</div>
+        </div>
+        
+        <div class="sonar-section">
+            <div class="left-panel">
+                <div class="sonar-display" id="sonarDisplay">
+                    <div class="sonar-grid"></div>
+                    <div class="sonar-circle circle-1"></div>
+                    <div class="sonar-circle circle-2"></div>
+                    <div class="sonar-circle circle-3"></div>
+                    <div class="sonar-sweep"></div>
+                    <div class="center-target"></div>
+                    <div id="targetsContainer"></div>
+                    <div class="coordinates" style="top: 10px; left: 10px;">N: 43°32'</div>
+                    <div class="coordinates" style="bottom: 10px; right: 10px;">E: 07°25'</div>
+                </div>
+                
+                <div class="instructions">
+                    Protégez le centre du sonar des intrusions<br>
+                    Éliminez toutes les cibles mobiles avant qu'elles n'atteignent le cœur<br>
+                    <strong>Cliquez sur les cibles rouges pour les détruire</strong>
+                </div>
+            </div>
+            
+            <div class="control-panel">
+                <div class="frequency-display" id="frequencyDisplay">
+                    🎯 SYSTÈME DÉFENSIF ACTIVÉ
+                </div>
+                
+                <div class="targets-counter">
+                    <div class="counter-item">
+                        <div class="counter-label">CIBLES DÉTRUITES</div>
+                        <div class="counter-value" id="destroyedCount">0</div>
+                    </div>
+                    <div class="counter-item">
+                        <div class="counter-label">CIBLES ACTIVES</div>
+                        <div class="counter-value" id="activeCount">0</div>
+                    </div>
+                    <div class="counter-item">
+                        <div class="counter-label">OBJECTIF</div>
+                        <div class="counter-value">50</div>
+                    </div>
+                </div>
+                
+                <div class="mission-status" id="missionStatus">
+                    🛡️ DÉFENSE: Vague 1 en cours
+                </div>
+                
+                <div class="game-over-screen" id="gameOverScreen">
+                    <div class="result-message" id="resultMessage">🔓 PIRATAGE RÉUSSI 🔓</div>
+                    <div class="final-code" id="finalResult">9874</div>
+                    <div class="result-message" id="subMessage">
+                        ✅ Système de sécurité neutralisé<br>
+                        ✅ Accès yacht accordé - Mission réussie
+                    </div>
+                    <button class="restart-btn" onclick="restartGame()">NOUVEAU PIRATAGE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameActive = false;
+        let targetsDestroyed = 0;
+        let totalTargets = 50;
+        let activeTargets = [];
+        let currentWave = 1;
+        let maxWaves = 10;
+        let targetsPerWave = 5;
+        let gameSpeed = 1;
+        
+        const sonarRadius = 140; // Rayon du sonar
+        const centerX = 160; // Centre X du sonar
+        const centerY = 160; // Centre Y du sonar
+        
+        function startGame() {
+            gameActive = true;
+            targetsDestroyed = 0;
+            currentWave = 1;
+            activeTargets = [];
+            gameSpeed = 1;
+            
+            updateDisplay();
+            startWave();
+            startBackgroundEffects();
+        }
+        
+        function startWave() {
+            if (currentWave > maxWaves) {
+                gameWon();
+                return;
+            }
+            
+            document.getElementById('missionStatus').textContent = 
+                `🛡️ DÉFENSE: Vague ${currentWave} en cours`;
+            document.getElementById('waveCounter').textContent = 
+                `VAGUE: ${currentWave}/${maxWaves}`;
+            
+            // Créer les cibles pour cette vague
+            for (let i = 0; i < targetsPerWave; i++) {
+                setTimeout(() => {
+                    if (gameActive) {
+                        createTarget();
+                    }
+                }, i * 1000); // Délai entre chaque cible
+            }
+        }
+        
+        function createTarget() {
+            // Position aléatoire sur le bord du sonar
+            const angle = Math.random() * 2 * Math.PI;
+            const startX = centerX + Math.cos(angle) * sonarRadius;
+            const startY = centerY + Math.sin(angle) * sonarRadius;
+            
+            const target = document.createElement('div');
+            target.className = 'moving-target';
+            target.style.left = startX + 'px';
+            target.style.top = startY + 'px';
+            
+            const targetData = {
+                element: target,
+                x: startX,
+                y: startY,
+                angle: angle + Math.PI, // Direction vers le centre
+                speed: (0.8 + Math.random() * 1.2) * gameSpeed, // Vitesse augmentée
+                destroyed: false
+            };
+            
+            target.addEventListener('click', () => destroyTarget(targetData));
+            
+            document.getElementById('targetsContainer').appendChild(target);
+            activeTargets.push(targetData);
+            
+            updateDisplay();
+        }
+        
+        function updateTargets() {
+            if (!gameActive) return;
+            
+            activeTargets.forEach((target, index) => {
+                if (target.destroyed) return;
+                
+                // Calculer la nouvelle position
+                target.x += Math.cos(target.angle) * target.speed;
+                target.y += Math.sin(target.angle) * target.speed;
+                
+                // Mettre à jour la position visuelle
+                target.element.style.left = target.x + 'px';
+                target.element.style.top = target.y + 'px';
+                
+                // Vérifier si la cible a atteint le centre
+                const distanceToCenter = Math.sqrt(
+                    Math.pow(target.x - centerX, 2) + 
+                    Math.pow(target.y - centerY, 2)
+                );
+                
+                if (distanceToCenter < 15) {
+                    // Cible a atteint le centre - échec
+                    gameLost();
+                    return;
+                }
+                
+                // Vérifier si la cible est sortie du sonar
+                if (distanceToCenter > sonarRadius + 20) {
+                    target.element.remove();
+                    activeTargets.splice(index, 1);
+                }
+            });
+            
+            // Vérifier si toutes les cibles de la vague sont détruites
+            const activeCount = activeTargets.filter(t => !t.destroyed).length;
+            if (activeCount === 0 && targetsDestroyed >= currentWave * targetsPerWave) {
+                currentWave++;
+                gameSpeed += 0.2; // Augmenter la difficulté
+                
+                setTimeout(() => {
+                    if (gameActive) {
+                        startWave();
+                    }
+                }, 2000);
+            }
+            
+            updateDisplay();
+        }
+        
+        function destroyTarget(targetData) {
+            if (!gameActive || targetData.destroyed) return;
+            
+            targetData.destroyed = true;
+            targetData.element.classList.add('destroyed');
+            targetsDestroyed++;
+            
+            // Effet visuel de destruction
+            targetData.element.style.pointerEvents = 'none';
+            
+            // Supprimer l'élément après l'animation
+            setTimeout(() => {
+                targetData.element.remove();
+                const index = activeTargets.indexOf(targetData);
+                if (index > -1) {
+                    activeTargets.splice(index, 1);
+                }
+            }, 500);
+            
+            // Mettre à jour l'affichage
+            document.getElementById('frequencyDisplay').textContent = 
+                '💥 CIBLE ÉLIMINÉE';
+            
+            setTimeout(() => {
+                if (gameActive && document.getElementById('frequencyDisplay').textContent === '💥 CIBLE ÉLIMINÉE') {
+                    document.getElementById('frequencyDisplay').textContent = 
+                        '🎯 SYSTÈME DÉFENSIF ACTIVÉ';
+                }
+            }, 1000);
+            
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            document.getElementById('destroyedCount').textContent = targetsDestroyed;
+            const activeCount = activeTargets.filter(t => !t.destroyed).length;
+            document.getElementById('activeCount').textContent = activeCount;
+            
+            // Changer la couleur si trop de cibles actives
+            const activeElement = document.getElementById('activeCount');
+            if (activeCount > 3) {
+                activeElement.classList.add('danger');
+            } else {
+                activeElement.classList.remove('danger');
+            }
+        }
+        
+        function gameWon() {
+            gameActive = false;
+            
+            // Nettoyer les cibles restantes
+            activeTargets.forEach(target => {
+                target.element.remove();
+            });
+            activeTargets = [];
+            
+            document.getElementById('frequencyDisplay').textContent = '🔐 PIRATAGE RÉUSSI';
+            document.getElementById('missionStatus').style.display = 'none';
+            
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            gameOverScreen.style.display = 'block';
+            gameOverScreen.classList.remove('failure');
+            
+            document.getElementById('resultMessage').textContent = '🔓 PIRATAGE RÉUSSI 🔓';
+            document.getElementById('resultMessage').classList.remove('failure');
+            document.getElementById('finalResult').textContent = '9874';
+            document.getElementById('finalResult').style.color = '#ffaa00';
+            document.getElementById('subMessage').textContent = 
+                '✅ Toutes les 50 défenses neutralisées\n✅ Accès yacht accordé - Mission réussie';
+            document.getElementById('subMessage').classList.remove('failure');
+            
+            // Effet de victoire
+            document.querySelector('.submarine-console').style.animation = 'consolePulse 0.5s infinite';
+        }
+        
+        function gameLost() {
+            gameActive = false;
+            
+            // Nettoyer les cibles restantes
+            activeTargets.forEach(target => {
+                target.element.remove();
+            });
+            activeTargets = [];
+            
+            document.getElementById('frequencyDisplay').textContent = '⚠️ SYSTÈME COMPROMIS';
+            document.getElementById('missionStatus').style.display = 'none';
+            
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            gameOverScreen.style.display = 'block';
+            gameOverScreen.classList.add('failure');
+            
+            document.getElementById('resultMessage').textContent = '❌ ÉCHEC DU PIRATAGE ❌';
+            document.getElementById('resultMessage').classList.add('failure');
+            document.getElementById('finalResult').textContent = 'ACCÈS REFUSÉ';
+            document.getElementById('finalResult').style.color = '#ff4444';
+            document.getElementById('subMessage').textContent = 
+                '⚠️ Défenses actives détectées\n⚠️ Système de sécurité renforcé';
+            document.getElementById('subMessage').classList.add('failure');
+            
+            // Effet d'alarme
+            document.querySelector('.submarine-console').style.borderColor = '#ff4444';
+            document.querySelector('.submarine-console').style.animation = 'ping 0.3s infinite';
+        }
+        
+        function restartGame() {
+            // Réinitialiser l'interface
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('missionStatus').style.display = 'block';
+            document.getElementById('missionStatus').textContent = '🛡️ DÉFENSE: Vague 1 en cours';
+            
+            // Réinitialiser la console
+            const console = document.querySelector('.submarine-console');
+            console.style.borderColor = '#00ffaa';
+            console.style.animation = 'consolePulse 3s infinite ease-in-out';
+            
+            // Nettoyer le container de cibles
+            document.getElementById('targetsContainer').innerHTML = '';
+            
+            startGame();
+        }
+        
+        function startBackgroundEffects() {
+            // Animation des cibles
+            const targetUpdateInterval = setInterval(() => {
+                if (gameActive) {
+                    updateTargets();
+                } else {
+                    clearInterval(targetUpdateInterval);
+                }
+            }, 50);
+            
+            // Messages de statut aléatoires
+            setInterval(() => {
+                if (gameActive && Math.random() > 0.8) {
+                    const randomMessages = [
+                        '📡 Scan périmètre de sécurité...',
+                        '🌊 Analyse signatures thermiques...',
+                        '🎯 Recherche intrusions actives...',
+                        '📊 Calibrage système défensif...',
+                        '🔍 Surveillance zone protégée...'
+                    ];
+                    const randomMsg = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+                    
+                    const originalText = document.getElementById('frequencyDisplay').textContent;
+                    if (originalText === '🎯 SYSTÈME DÉFENSIF ACTIVÉ') {
+                        document.getElementById('frequencyDisplay').textContent = randomMsg;
+                        setTimeout(() => {
+                            if (document.getElementById('frequencyDisplay').textContent === randomMsg) {
+                                document.getElementById('frequencyDisplay').textContent = '🎯 SYSTÈME DÉFENSIF ACTIVÉ';
+                            }
+                        }, 2000);
+                    }
+                }
+            }, 4000);
+        }
+        
+        // Démarrer le jeu au chargement
+        window.onload = function() {
+            setTimeout(startGame, 1000);
+        };
+    </script>
+</body>
+</html>
